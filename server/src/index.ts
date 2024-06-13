@@ -1,14 +1,18 @@
-import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
+
+import { trpcServer } from '@hono/trpc-server';
+import { serveStatic } from '@hono/node-server/serve-static';
+import { appRouter } from './router';
 
 const app = new Hono();
 
-app.get('/', (c) => c.text('Hello Hono!'));
+app.use('/*', serveStatic({ root: '../client/dist' }));
 
-const port = 3000;
-console.log(`Server is running on port ${port}`);
+app.use(
+  '/trpc/*',
+  trpcServer({
+    router: appRouter,
+  }),
+);
 
-serve({
-  fetch: app.fetch,
-  port,
-});
+export default app;
