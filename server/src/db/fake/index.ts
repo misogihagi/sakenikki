@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { Sake, Wish, Diary } from '../../entities';
 import type { UnionToIntersection } from '../../utils';
+import { Sake, Wish, Diary } from '../../entities';
 import fakeData from './data.json';
 
 type SakeType = z.infer<typeof Sake>;
@@ -22,6 +22,7 @@ const pool = {
   diary: diaryList,
   wish: wishList,
 };
+
 type PoolTypes = {
   sake:SakeType,
   diary:DiaryType,
@@ -38,8 +39,8 @@ function helper(entity:keyof typeof pool) {
       const material = {
         id: String(pool[entity].length + 1),
         ...data,
-      } as UnionToIntersection<PoolTypes[typeof entity]>;
-      pool[entity].push(material);
+      } as PoolTypes[typeof entity];
+      pool[entity].push(material as UnionToIntersection<PoolTypes[typeof entity]>);
       return material;
     },
   };
