@@ -2,6 +2,7 @@ import { z } from 'zod';
 import db from './db';
 import { procedure, router } from './trpc';
 import { Sake, Wish, Diary } from './entities';
+import { media } from './lib';
 
 const inputs = {
   sake: procedure.input(Sake.omit({ id: true })),
@@ -61,6 +62,7 @@ export const appRouter = router({
   wishList,
   wishById,
   wishCreate,
+  media: media(),
 });
 
 export type AppRouter = typeof appRouter;

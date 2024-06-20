@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { UnionToIntersection } from '../../utils';
+import type { UnionToIntersection } from '../../lib/utils';
 import { Sake, Wish, Diary } from '../../entities';
 import fakeData from './data.json';
 
