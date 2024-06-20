@@ -7,6 +7,7 @@ export const Sake = z.object({
   imageURL: z.string().nullish()
     .transform((s) => s ?? ''),
 });
+
 export const Wish = z.object({
   id: z.string(),
   sakeId: z.string(),
