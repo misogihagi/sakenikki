@@ -1,4 +1,5 @@
 {
+  "ignorePatterns": ["*.config.ts"],
   "extends": [
     "airbnb",
     "airbnb-typescript",
