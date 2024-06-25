@@ -12,7 +12,7 @@ const Media = z.object({
   mediaData: base64StringSchema,
 });
 
-const DEFAULT_OUTPUT_DIR = './media';
+const DEFAULT_OUTPUT_DIR = './data/media';
 
 const toStream = (body:string) => {
   const s = new Readable();

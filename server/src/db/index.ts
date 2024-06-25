@@ -1,4 +1,5 @@
-import { db as fakeDB } from './fake';
+import { db as fakeRepository } from './fake';
+import sqliteRepository from './sqlite';
 
-export { fakeDB };
-export default fakeDB;
+export { fakeRepository };
+export default sqliteRepository;

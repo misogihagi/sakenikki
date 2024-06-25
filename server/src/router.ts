@@ -5,12 +5,16 @@ import { Sake, Wish, Diary } from './entities';
 import { media } from './lib';
 
 const inputs = {
-  sake: procedure.input(Sake.omit({ id: true })),
-  diary: procedure.input(Diary.omit({ id: true })),
-  wish: procedure.input(Wish.omit({ id: true })),
+  sake: Sake.omit({ id: true }),
+  diary: Diary.omit({ id: true }),
+  wish: Wish.omit({ id: true }),
 };
 
-function helper(entity:keyof typeof db) {
+function inputHelper<T extends keyof typeof db>(input:T) {
+  return procedure.input(inputs[input]);
+}
+
+function helper<T extends keyof typeof db>(entity:T) {
   return {
     list: procedure
       .query(async () => {
@@ -28,9 +32,11 @@ function helper(entity:keyof typeof db) {
         const material = await db[entity].findById(input);
         return material;
       }),
-    create: inputs[entity].mutation(async (opts) => {
+    create: inputHelper(entity).mutation(async (opts) => {
       const { input } = opts;
-      const material = await db[entity].create(input);
+      // todo: refactor
+      // eslint-disable-next-line
+      const material = await db[entity].create(input as unknown as any);
       return material;
     }),
   };
@@ -52,7 +58,7 @@ const {
   create: wishCreate,
 } = helper('wish');
 
-export const appRouter = router({
+export const appRouter = (baseDir:string) => router({
   sakeList,
   sakeById,
   sakeCreate,
@@ -62,7 +68,7 @@ export const appRouter = router({
   wishList,
   wishById,
   wishCreate,
-  media: media(),
+  media: media(baseDir),
 });
 
 export type AppRouter = typeof appRouter;
