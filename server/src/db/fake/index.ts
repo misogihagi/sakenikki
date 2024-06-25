@@ -1,11 +1,6 @@
-import { z } from 'zod';
-import type { UnionToIntersection } from '../../lib/utils';
-import { Sake, Wish, Diary } from '../../entities';
+import type { DB, Resource, Pool } from '../types';
+import type { DiaryType, WishType } from '../../entities';
 import fakeData from './data.json';
-
-type SakeType = z.infer<typeof Sake>;
-type DiaryType = z.infer<typeof Diary>;
-type WishType = z.infer<typeof Wish>;
 
 const { sakeList } = fakeData;
 
@@ -17,38 +12,35 @@ const wishList:WishType[] = fakeData.wishList.map(
   (w) => ({ ...w, createdAt: new Date(w.createdAt) }),
 );
 
-const pool = {
+const pool:Pool = {
   sake: sakeList,
   diary: diaryList,
   wish: wishList,
 };
 
-type PoolTypes = {
-  sake:SakeType,
-  diary:DiaryType,
-  wish:WishType,
-};
-
-function helper(entity:keyof typeof pool) {
+function helper<T extends keyof Pool>(entity:T):Resource<T> {
   return {
-    findMany: () => pool[entity],
+    findMany: async () => pool[entity],
     findById: async (id: string) => pool[entity].find(
       (material) => material.id === id,
-    ),
-    create: async (data:Omit<PoolTypes[typeof entity], 'id'>) => {
+    ) ?? null,
+    create: async (data:Omit<Pool[typeof entity][number], 'id'>) => {
       const material = {
-        id: String(pool[entity].length + 1),
         ...data,
-      } as PoolTypes[typeof entity];
-      pool[entity].push(material as UnionToIntersection<PoolTypes[typeof entity]>);
+        id: String(pool[entity].length + 1),
+      } as Pool[typeof entity][number];
+      // todo: refactor
+      // eslint-disable-next-line
+      pool[entity].push(material as unknown as any);
       return material;
     },
   };
 }
 
-export const db = {
+export const db:DB = {
   sake: helper('sake'),
   diary: helper('diary'),
   wish: helper('wish'),
 };
+
 export default db;
