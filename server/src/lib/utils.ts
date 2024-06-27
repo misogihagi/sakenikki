@@ -10,8 +10,9 @@ export const base64StringSchema = z.custom<Base64String>((value: unknown) => {
   if (typeof value !== 'string') {
     return false;
   }
+  const base64Str = value.slice(0, 4) === 'data' ? value.split(',')[1] : value;
   try {
-    atob(value);
+    atob(base64Str);
     return true;
   } catch (error) {
     return false;
