@@ -14,35 +14,23 @@ const Media = z.object({
 
 const DEFAULT_OUTPUT_DIR = './data/media';
 
-const toStream = (body:string) => {
-  const s = new Readable();
-  s._read = () => {}; /* eslint no-underscore-dangle: 'off' */
-  s.push(body);
-  s.push(null);
-  return s;
-};
-
 export const saveWithoutExifFromBase64 = (image:string, output:string) => {
-  const binary = atob(image);
-  const binaryStream = toStream(binary);
+  const stream = Readable.from(Buffer.from(image, 'base64'));
   const writer = fs.createWriteStream(output);
-  binaryStream.pipe(new ExifTransformer()).pipe(writer);
+  stream.pipe(new ExifTransformer()).pipe(writer);
 };
 
 export const media = (outputDir:string = DEFAULT_OUTPUT_DIR) => procedure
-  .input((req) => {
-    if (typeof req !== 'object') throw new Error('invalid request');
-    const { json } = req as Record<string, unknown>;
-    return Media.parse(json);
-  }).mutation(async (opts) => {
+  .input(Media).mutation(async (opts) => {
     const { input } = opts;
 
     const uuid = crypto.randomUUID();
 
     // prepare file
     if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
+    const base64Str = input.mediaData.slice(0, 4) === 'data' ? input.mediaData.split(',')[1] : input.mediaData;
 
-    saveWithoutExifFromBase64(input.mediaData, path.join(outputDir, uuid));
+    saveWithoutExifFromBase64(base64Str, path.join(outputDir, uuid));
 
     const url = path.join(outputDir, uuid);
     return url;
