@@ -1,7 +1,8 @@
 {
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "start": "tsx ./run.ts"
+    "start": "tsx ./run.ts",
+    "migration": " tsx src/db/sqlite/migrate.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.11.2",
