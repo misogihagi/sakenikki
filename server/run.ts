@@ -13,6 +13,6 @@ function main(outputDir = DEFAULT_OUTPUT_DIR) {
   prepare(outputDir);
   const dbPath = path.join(outputDir, 'sqlite.db');
   if (!fs.existsSync(dbPath)) migrate(dbPath);
-  serve(makeApp(outputDir));
+  serve(makeApp({ baseDir: outputDir, dbPath }));
 }
 main();
