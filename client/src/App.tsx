@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, SafeAreaView,StatusBar } from 'react-native';
 
 import Write from './components/Write';
 // export { default } from '../.storybook';
@@ -7,6 +7,7 @@ import Write from './components/Write';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: StatusBar.currentHeight,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
@@ -15,8 +16,8 @@ const styles = StyleSheet.create({
 
 export default function App() {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Write />
-    </View>
+    </SafeAreaView>
   );
 }

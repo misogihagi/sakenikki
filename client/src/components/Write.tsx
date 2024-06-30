@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import {
-  StyleSheet, Text, View, TextInput, Button, Image,
+  StyleSheet, Text, ScrollView, TextInput, Button, Image,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { DatePickerModal, ja, registerTranslation } from 'react-native-paper-dates';
@@ -25,9 +25,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    paddingTop: 30,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
 
@@ -60,7 +59,6 @@ export default function App() {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
       quality: 1,
       exif: false,
       selectionLimit: 1,
@@ -73,7 +71,7 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
 
         <Text>画像</Text>
         <Button title="画像を選択" onPress={pickImage} />
@@ -135,7 +133,7 @@ export default function App() {
           value={form.location}
         />
         <Button onPress={() => onSubmit(form)} title="submit" />
-      </View>
+      </ScrollView>
     </SafeAreaProvider>
   );
 }
